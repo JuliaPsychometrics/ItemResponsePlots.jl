@@ -6,20 +6,20 @@ DocMeta.setdocmeta!(ItemResponseRecipes, :DocTestSetup, :(using ItemResponseReci
 makedocs(;
     modules=[ItemResponseRecipes],
     authors="Philipp Gewessler",
-    repo="https://github.com/p-gw/ItemResponseRecipes.jl/blob/{commit}{path}#{line}",
+    repo="https://github.com/JuliaPsychometrics/ItemResponseRecipes.jl/blob/{commit}{path}#{line}",
     sitename="ItemResponseRecipes.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://p-gw.github.io/ItemResponseRecipes.jl",
+        canonical="https://JuliaPsychometrics.github.io/ItemResponseRecipes.jl",
         edit_link="main",
-        assets=String[],
+        assets=String[]
     ),
     pages=[
         "Home" => "index.md",
-    ],
+    ]
 )
 
 deploydocs(;
-    repo="github.com/p-gw/ItemResponseRecipes.jl",
-    devbranch="main",
+    repo="github.com/JuliaPsychometrics/ItemResponseRecipes.jl",
+    devbranch="main"
 )

@@ -4,7 +4,7 @@ CurrentModule = ItemResponseRecipes
 
 # ItemResponseRecipes
 
-Documentation for [ItemResponseRecipes](https://github.com/p-gw/ItemResponseRecipes.jl).
+Documentation for [ItemResponseRecipes](https://github.com/JuliaPsychometrics/ItemResponseRecipes.jl).
 
 ```@index
 ```
