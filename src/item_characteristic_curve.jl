@@ -42,5 +42,14 @@ function _item_characteristic_curve(::Type{Dichotomous}, ::Type{Univariate}, ::T
     return icc
 end
 
+function _item_characteristic_curve(::Type{Dichotomous}, ::Type{Univariate}, ::Type{<:Dimensionality}, ::Type{PointEstimate}, icc)
+    model = icc[1]
+    item = icc[2]
+    probs = [irf(model[], theta, item[], 1) for theta in icc.theta[]]
+    lines!(icc, icc.theta[], probs, color=icc.color)
+    return icc
+end
+
+
 const item_characteristic_curve = itemcharacteristiccurve
 const item_characteristic_curve! = itemcharacteristiccurve!
