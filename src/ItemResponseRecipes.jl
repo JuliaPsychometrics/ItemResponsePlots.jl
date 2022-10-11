@@ -7,6 +7,7 @@ using StatsBase
 
 export item_characteristic_curve, item_characteristic_curve!
 export item_information_curve, item_information_curve!
+export expected_score_plot, expected_score_plot!
 
 include("item_characteristic_curve.jl")
 include("item_information_curve.jl")
