@@ -39,5 +39,13 @@ function _item_information_curve(::Type{Dichotomous}, ::Type{Univariate}, ::Type
     return iic
 end
 
+function _item_information_curve(::Type{Dichotomous}, ::Type{Univariate}, ::Type{<:Dimensionality}, ::Type{PointEstimate}, iic)
+    model = iic[1]
+    item = iic[2]
+    probs = [iif(model[], theta, item[], 1) for theta in iic.theta[]]
+    lines!(iic, iic.theta[], probs, color=iic.color)
+    return iic
+end
+
 const item_information_curve = iteminformationcurve
 const item_information_curve! = iteminformationcurve!
