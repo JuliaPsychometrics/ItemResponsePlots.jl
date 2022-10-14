@@ -1,8 +1,30 @@
+"""
+    expected_score_plot(model::ItemResponseModel)
+    expected_score_plot(model::ItemResponseModel, items)
+
+Create a plot of the expected score for `model`.
+If `items` is specified, the expected score is plotted according to the subtest including
+only `items`.
+If `items` is omitted, the expected score is plotted for all items included in `model`.
+
+# Plot attributes
+## Generic
+- `color`: The color of the expected score curve.
+- `theta`: The values of `theta` for which to plot the expected scores.
+  default: $(getdefault("theta")).
+
+## Specific
+### Models with `SamplingEstimate`
+- `samples`: The number of samples to plot. default: $(getdefault("samples")).
+
+"""
 MakieCore.@recipe(ExpectedScorePlot) do scene
     MakieCore.Attributes(
+        # generic
         color=colorant"#10b981",
-        samples=1000,
-        theta=-3:0.01:3
+        theta=getdefault("theta"),
+        # SamplingEstimate
+        samples=getdefault("samples"),
     )
 end
 
