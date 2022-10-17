@@ -10,6 +10,7 @@ export getdefault, setdefault!
 export item_characteristic_curve, item_characteristic_curve!
 export item_information_curve, item_information_curve!
 export expected_score_plot, expected_score_plot!
+export information_plot, information_plot!
 
 const DEFAULT_VALUES = Ref(Dict(
     "theta" => -3:0.01:3,
@@ -33,5 +34,6 @@ setdefault!(attribute::String, value) = setindex!(DEFAULT_VALUES[], value, attri
 include("item_characteristic_curve.jl")
 include("item_information_curve.jl")
 include("expected_score_plot.jl")
+include("information_plot.jl")
 
 end
