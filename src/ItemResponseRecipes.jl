@@ -3,7 +3,10 @@ module ItemResponseRecipes
 using AbstractItemResponseModels
 using Colors
 using MakieCore
+using Makie
 using StatsBase
+
+import MakieCore: @recipe, Attributes, default_theme, theme, plot!
 
 export getdefault, setdefault!
 
@@ -11,9 +14,14 @@ export item_characteristic_curve, item_characteristic_curve!
 export item_information_curve, item_information_curve!
 export expected_score_plot, expected_score_plot!
 
+include("utils.jl")
+
 const DEFAULT_VALUES = Ref(Dict(
     "theta" => -3:0.01:3,
-    "samples" => 1000
+    "samples" => 1000,
+    "uncertainty_type" => :samples,
+    "quantiles" => ci(0.2),
+    "aggregate_fun" => x -> vec(mean(x, dims=2))
 ))
 
 """
