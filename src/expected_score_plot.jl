@@ -18,8 +18,8 @@ If `items` is omitted, the expected score is plotted for all items included in `
 - `samples`: The number of samples to plot. default: $(getdefault("samples")).
 
 """
-MakieCore.@recipe(ExpectedScorePlot) do scene
-    MakieCore.Attributes(
+@recipe(ExpectedScorePlot) do scene
+    Attributes(
         # generic
         color=colorant"#10b981",
         theta=getdefault("theta"),
@@ -29,7 +29,7 @@ MakieCore.@recipe(ExpectedScorePlot) do scene
 end
 
 # with item specification
-function MakieCore.plot!(esp::ExpectedScorePlot{<:Tuple{<:ItemResponseModel,Any}})
+function plot!(esp::ExpectedScorePlot{<:Tuple{<:ItemResponseModel,Any}})
     # parse arguments
     model = esp[1]
 
@@ -72,7 +72,7 @@ function _expected_score_plot_item_subset(::Type{Dichotomous}, ::Type{<:Dimensio
 end
 
 # full test
-function MakieCore.plot!(esp::ExpectedScorePlot{<:Tuple{<:ItemResponseModel}})
+function plot!(esp::ExpectedScorePlot{<:Tuple{<:ItemResponseModel}})
     # parse arguments
     model = esp[1]
 

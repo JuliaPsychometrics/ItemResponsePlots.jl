@@ -2,11 +2,10 @@ module ItemResponseRecipes
 
 using AbstractItemResponseModels
 using Colors
-using MakieCore
 using Makie
 using StatsBase
 
-import MakieCore: @recipe, Attributes, default_theme, theme, plot!
+import Makie: @recipe, Attributes, default_theme, theme, plot!
 
 export getdefault, setdefault!
 

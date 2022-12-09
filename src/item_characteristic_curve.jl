@@ -45,7 +45,7 @@ If `response` is omitted, the default plot behaviour depends on `model`:
         default_theme(scene)...,
         # generic
         color=theme(scene, :linecolor),
-        uncertainty_color=(colorant"#bdbdbd", 50 / getdefault("samples")),
+        uncertainty_color=colorant"#bdbdbd",
         cycle=[:color],
         theta=getdefault("theta"),
         show_data=false,
@@ -144,7 +144,7 @@ end
 function plot_icc_aggregate!(::Type{<:ResponseType}, ::Type{Univariate}, ::Type{<:Dimensionality}, ::Type{SamplingEstimate}, icc, probs)
     if !isnothing(icc.aggregate_fun[])
         agg = icc.aggregate_fun[](probs)
-        lines!(icc, icc.theta[], agg, color=icc.color[])
+        lines!(icc, icc.theta[], agg, cycle=icc.cycle[], color=icc.color[])
     end
     return nothing
 end

@@ -21,8 +21,8 @@ If `response` is omitted, the default plot behaviour depends on `model`:
 - `samples`: The number of samples to plot. default: $(getdefault("samples")).
 
 """
-MakieCore.@recipe(ItemInformationCurve) do scene
-    MakieCore.Attributes(
+@recipe(ItemInformationCurve) do scene
+    Attributes(
         # generic
         color=colorant"#10b981",
         theta=getdefault("theta"),
@@ -31,7 +31,7 @@ MakieCore.@recipe(ItemInformationCurve) do scene
     )
 end
 
-function MakieCore.plot!(iic::ItemInformationCurve{<:Tuple{<:ItemResponseModel,Int,Int}})
+function plot!(iic::ItemInformationCurve{<:Tuple{<:ItemResponseModel,Int,Int}})
     # parse arguments
     model = iic[1]
     response = iic[3]
