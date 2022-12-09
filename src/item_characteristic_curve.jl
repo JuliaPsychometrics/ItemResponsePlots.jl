@@ -9,7 +9,7 @@ person ability θ.
 
 If `response` is omitted, the default plot behaviour depends on `model`:
 - For models where `response_type(model) == Dichotomous` the item characteristic curve for
-  response = 1 is plotted.
+  response = 1 is plotted, i.e. the probability of a correct response.
 - For models where `response_type(model) <: Union{Nominal, Ordinal}` all category characteristic
   curves are plotted.
 
@@ -45,7 +45,7 @@ If `response` is omitted, the default plot behaviour depends on `model`:
         default_theme(scene)...,
         # generic
         color=theme(scene, :linecolor),
-        uncertainty_color=colorant"#bdbdbd",
+        uncertainty_color=(colorant"#bdbdbd", 50 / getdefault("samples")),
         cycle=[:color],
         theta=getdefault("theta"),
         show_data=false,
@@ -58,37 +58,72 @@ If `response` is omitted, the default plot behaviour depends on `model`:
     )
 end
 
-function MakieCore.plot!(icc::ItemCharacteristicCurve{<:Tuple{<:ItemResponseModel,Int,<:Real}})
+function plot!(icc::ItemCharacteristicCurve{<:Tuple{<:ItemResponseModel,<:Integer,<:Real}})
     # parse arguments
     model = icc[1]
     response = icc[3]
-    checkresponsetype(response_type(model[]), response[])
+    rt, pd, id, et = modeltraits(model[])
 
-    rt = response_type(model[])
-    pd = person_dimensionality(model[])
-    id = item_dimensionality(model[])
-    et = estimation_type(model[])
+    checkresponsetype(rt, response[])
 
-    icc = _item_characteristic_curve(rt, pd, id, et, icc, response[])
+    probs = icc_probabilities(rt, pd, id, et, icc, response[])
+    plot_icc_uncertainty!(rt, pd, id, et, icc, probs)
+    plot_icc_aggregate!(rt, pd, id, et, icc, probs)
 
     return icc
 end
 
-function _item_characteristic_curve(::Type{<:ResponseType}, ::Type{Univariate}, ::Type{<:Dimensionality}, ::Type{SamplingEstimate}, icc, response)
+function plot!(icc::ItemCharacteristicCurve{<:Tuple{<:ItemResponseModel,<:Integer}})
+    model = icc[1]
+    rt, pd, id, et = modeltraits(model[])
+
+    if rt <: Dichotomous
+        probs = icc_probabilities(rt, pd, id, et, icc, 1)
+        plot_icc_uncertainty!(rt, pd, id, et, icc, probs)
+        plot_icc_aggregate!(rt, pd, id, et, icc, probs)
+    elseif rt <: Union{Nominal,Ordinal}
+        responses = 1:4
+        probs = [icc_probabilities(rt, pd, id, et, icc, response) for response in responses]
+
+        # plot uncertainty intervals/samples first, so they don't overlay aggregate values
+        for prob in probs
+            plot_icc_uncertainty!(rt, pd, id, et, icc, prob)
+        end
+
+        for prob in probs
+            plot_icc_aggregate!(rt, pd, id, et, icc, prob)
+        end
+    else
+        error("not implemented")
+    end
+
+    return icc
+end
+
+function icc_probabilities(::Type{<:ResponseType}, ::Type{Univariate}, ::Type{<:Dimensionality}, ::Type{SamplingEstimate}, icc, response)
     model = icc[1]
     item = icc[2]
     nsamples = size(model[].pars, 1)
     n = ifelse(icc.uncertainty_type == :samples, icc.samples[], nsamples)
     iter = sample(1:nsamples, n, replace=false)
 
-    # calculate response probabilities
     probs = Matrix{Float64}(undef, length(icc.theta[]), n)
 
     for (i, theta) in enumerate(icc.theta[])
         probs[i, :] .= irf(model[], theta, item[], response)[iter]
     end
 
-    # plot uncertainty
+    return probs
+end
+
+function icc_probabilities(::Type{<:ResponseType}, ::Type{Univariate}, ::Type{<:Dimensionality}, ::Type{PointEstimate}, icc, response)
+    model = icc[1]
+    item = icc[2]
+    probs = [irf(model[], theta, item[], response) for theta in icc.theta[]]
+    return probs
+end
+
+function plot_icc_uncertainty!(::Type{<:ResponseType}, ::Type{Univariate}, ::Type{<:Dimensionality}, ::Type{SamplingEstimate}, icc, probs)
     if icc.uncertainty_type[] == :samples
         for iter in eachcol(probs)
             lines!(icc, icc.theta[], iter, color=icc.uncertainty_color[])
@@ -99,27 +134,23 @@ function _item_characteristic_curve(::Type{<:ResponseType}, ::Type{Univariate}, 
         upper = last.(q)
         band!(icc, icc.theta[], lower, upper, color=icc.uncertainty_color[])
     end
+    return nothing
+end
 
-    # overlay aggregate
+function plot_icc_uncertainty!(::Type{<:ResponseType}, ::Type{Univariate}, ::Type{<:Dimensionality}, ::Type{PointEstimate}, icc, probs)
+    return nothing
+end
+
+function plot_icc_aggregate!(::Type{<:ResponseType}, ::Type{Univariate}, ::Type{<:Dimensionality}, ::Type{SamplingEstimate}, icc, probs)
     if !isnothing(icc.aggregate_fun[])
         agg = icc.aggregate_fun[](probs)
         lines!(icc, icc.theta[], agg, color=icc.color[])
     end
-
-    # overlay observed data
-    if icc.show_data[]
-        @warn "not implemented yet"
-    end
-
-    return icc
+    return nothing
 end
 
-function _item_characteristic_curve(::Type{<:ResponseType}, ::Type{Univariate}, ::Type{<:Dimensionality}, ::Type{PointEstimate}, icc, response)
-    model = icc[1]
-    item = icc[2]
-    probs = [irf(model[], theta, item[], response) for theta in icc.theta[]]
+function plot_icc_aggregate!(::Type{<:ResponseType}, ::Type{Univariate}, ::Type{<:Dimensionality}, ::Type{PointEstimate}, icc, probs)
     lines!(icc, icc.theta[], probs; cycle=icc.cycle[], color=icc.color[])
-    return icc
 end
 
 const item_characteristic_curve = itemcharacteristiccurve
