@@ -2,7 +2,7 @@ module ItemResponsePlots
 
 using AbstractItemResponseModels
 using Colors
-using MakieCore
+using Makie
 using StatsBase
 
 export getdefault, setdefault!
@@ -12,9 +12,14 @@ export item_information_curve, item_information_curve!
 export expected_score_plot, expected_score_plot!
 export information_plot, information_plot!
 
+include("utils.jl")
+
 const DEFAULT_VALUES = Ref(Dict(
     "theta" => -3:0.01:3,
-    "samples" => 1000
+    "samples" => 1000,
+    "uncertainty_type" => :samples,
+    "quantiles" => ci(0.2),
+    "aggregate_fun" => x -> vec(mean(x, dims=2))
 ))
 
 """
@@ -32,8 +37,8 @@ Set a new default value for `attribute`.
 setdefault!(attribute::String, value) = setindex!(DEFAULT_VALUES[], value, attribute)
 
 include("item_characteristic_curve.jl")
-include("item_information_curve.jl")
-include("expected_score_plot.jl")
-include("information_plot.jl")
+# include("item_information_curve.jl")
+# include("expected_score_plot.jl")
+# include("information_plot.jl")
 
 end
