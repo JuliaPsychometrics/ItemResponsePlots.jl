@@ -1,4 +1,4 @@
-module ItemResponseRecipes
+module ItemResponsePlots
 
 using AbstractItemResponseModels
 using Colors
