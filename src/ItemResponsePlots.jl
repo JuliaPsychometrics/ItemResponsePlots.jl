@@ -37,7 +37,7 @@ Set a new default value for `attribute`.
 setdefault!(attribute::String, value) = setindex!(DEFAULT_VALUES[], value, attribute)
 
 include("item_characteristic_curve.jl")
-# include("item_information_curve.jl")
+include("item_information_curve.jl")
 # include("expected_score_plot.jl")
 # include("information_plot.jl")
 
