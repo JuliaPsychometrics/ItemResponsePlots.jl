@@ -107,7 +107,7 @@ function plot_iic_uncertainty!(::Type{SamplingEstimate}, iic, info)
             lines!(iic, iic.theta[], iter, color = iic.uncertainty_color[])
         end
     elseif iic.uncertainty_type[] == :interval
-        q = [quantile(col, iic.quantiles[]) for col in eachrow(probs)]
+        q = [quantile(col, iic.quantiles[]) for col in eachrow(info)]
         lower = first.(q)
         upper = last.(q)
         band!(iic, iic.theta[], lower, upper, color = iic.uncertainty_color[])
