@@ -19,12 +19,12 @@ If `items` is omitted, the expected score is plotted for all items included in `
 
 """
 MakieCore.@recipe(ExpectedScorePlot) do scene
-    MakieCore.Attributes(
+    return MakieCore.Attributes(
         # generic
-        color=colorant"#10b981",
-        theta=getdefault("theta"),
+        color = colorant"#10b981",
+        theta = getdefault("theta"),
         # SamplingEstimate
-        samples=getdefault("samples"),
+        samples = getdefault("samples"),
     )
 end
 
@@ -43,20 +43,32 @@ function MakieCore.plot!(esp::ExpectedScorePlot{<:Tuple{<:ItemResponseModel,Any}
     return esp
 end
 
-function _expected_score_plot_item_subset(::Type{Dichotomous}, ::Type{<:Dimensionality}, ::Type{<:Dimensionality}, ::Type{PointEstimate}, esp)
+function _expected_score_plot_item_subset(
+    ::Type{Dichotomous},
+    ::Type{<:Dimensionality},
+    ::Type{<:Dimensionality},
+    ::Type{PointEstimate},
+    esp,
+)
     model = esp[1]
     items = esp[2]
     scores = [expected_score(model[], theta, items[]) for theta in esp.theta[]]
-    lines!(esp, esp.theta[], scores, color=esp.color)
+    lines!(esp, esp.theta[], scores, color = esp.color)
     return esp
 end
 
-function _expected_score_plot_item_subset(::Type{Dichotomous}, ::Type{<:Dimensionality}, ::Type{<:Dimensionality}, ::Type{SamplingEstimate}, esp)
+function _expected_score_plot_item_subset(
+    ::Type{Dichotomous},
+    ::Type{<:Dimensionality},
+    ::Type{<:Dimensionality},
+    ::Type{SamplingEstimate},
+    esp,
+)
     model = esp[1]
     items = esp[2]
     nsamples = size(model[].pars, 1)
     n = esp.samples[]
-    iter = sample(1:nsamples, n, replace=false)
+    iter = sample(1:nsamples, n, replace = false)
 
     scores = Matrix{Float64}(undef, length(esp.theta[]), n)
 
@@ -65,7 +77,7 @@ function _expected_score_plot_item_subset(::Type{Dichotomous}, ::Type{<:Dimensio
     end
 
     for iter in eachcol(scores)
-        lines!(esp, esp.theta[], iter, color=(esp.color, 50 / n))
+        lines!(esp, esp.theta[], iter, color = (esp.color, 50 / n))
     end
 
     return esp
@@ -86,18 +98,30 @@ function MakieCore.plot!(esp::ExpectedScorePlot{<:Tuple{<:ItemResponseModel}})
     return esp
 end
 
-function _expected_score_plot_full_test(::Type{Dichotomous}, ::Type{<:Dimensionality}, ::Type{<:Dimensionality}, ::Type{PointEstimate}, esp)
+function _expected_score_plot_full_test(
+    ::Type{Dichotomous},
+    ::Type{<:Dimensionality},
+    ::Type{<:Dimensionality},
+    ::Type{PointEstimate},
+    esp,
+)
     model = esp[1]
     scores = [expected_score(model[], theta) for theta in esp.theta[]]
-    lines!(esp, esp.theta[], scores, color=esp.color)
+    lines!(esp, esp.theta[], scores, color = esp.color)
     return esp
 end
 
-function _expected_score_plot_full_test(::Type{Dichotomous}, ::Type{<:Dimensionality}, ::Type{<:Dimensionality}, ::Type{SamplingEstimate}, esp)
+function _expected_score_plot_full_test(
+    ::Type{Dichotomous},
+    ::Type{<:Dimensionality},
+    ::Type{<:Dimensionality},
+    ::Type{SamplingEstimate},
+    esp,
+)
     model = esp[1]
     nsamples = size(model[].pars, 1)
     n = esp.samples[]
-    iter = sample(1:nsamples, n, replace=false)
+    iter = sample(1:nsamples, n, replace = false)
 
     scores = Matrix{Float64}(undef, length(esp.theta[]), n)
 
@@ -106,7 +130,7 @@ function _expected_score_plot_full_test(::Type{Dichotomous}, ::Type{<:Dimensiona
     end
 
     for iter in eachcol(scores)
-        lines!(esp, esp.theta[], iter, color=(esp.color, 50 / n))
+        lines!(esp, esp.theta[], iter, color = (esp.color, 50 / n))
     end
 
     return esp

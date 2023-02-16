@@ -22,23 +22,25 @@ If `response` is omitted, the default plot behaviour depends on `model`:
 
 """
 @recipe(ItemInformationCurve) do scene
-    Attributes(;
+    return Attributes(;
         default_theme(scene)...,
         # generic
-        color=theme(scene, :linecolor),
-        palette=theme(scene, :palette),
-        uncertainty_color=colorant"#bdbdbd",
-        cycle=[:color],
-        theta=getdefault("theta"),
+        color = theme(scene, :linecolor),
+        palette = theme(scene, :palette),
+        uncertainty_color = colorant"#bdbdbd",
+        cycle = [:color],
+        theta = getdefault("theta"),
         # SamplingEstimate
-        samples=getdefault("samples"),
-        uncertainty_type=getdefault("uncertainty_type"),
-        quantiles=getdefault("quantiles"),
-        aggregate_fun=getdefault("aggregate_fun")
+        samples = getdefault("samples"),
+        uncertainty_type = getdefault("uncertainty_type"),
+        quantiles = getdefault("quantiles"),
+        aggregate_fun = getdefault("aggregate_fun"),
     )
 end
 
-function Makie.plot!(iic::ItemInformationCurve{<:Tuple{<:ItemResponseModel,<:Integer,<:Real}})
+function Makie.plot!(
+    iic::ItemInformationCurve{<:Tuple{<:ItemResponseModel,<:Integer,<:Real}},
+)
     # parse arguments
     model = iic[1]
     response = iic[3]
@@ -81,7 +83,7 @@ function iic_information(::Type{SamplingEstimate}, iic, response)
     item = iic[2]
     nsamples = size(model[].pars, 1)
     n = ifelse(iic.uncertainty_type == :samples, iic.samples[], nsamples)
-    iter = sample(1:nsamples, n, replace=false)
+    iter = sample(1:nsamples, n, replace = false)
 
     info = Matrix{Float64}(undef, length(iic.theta[]), n)
 
@@ -102,13 +104,13 @@ end
 function plot_iic_uncertainty!(::Type{SamplingEstimate}, iic, info)
     if iic.uncertainty_type[] == :samples
         for iter in eachcol(info)
-            lines!(iic, iic.theta[], iter, color=iic.uncertainty_color[])
+            lines!(iic, iic.theta[], iter, color = iic.uncertainty_color[])
         end
     elseif iic.uncertainty_type[] == :interval
         q = [quantile(col, iic.quantiles[]) for col in eachrow(probs)]
         lower = first.(q)
         upper = last.(q)
-        band!(iic, iic.theta[], lower, upper, color=iic.uncertainty_color[])
+        band!(iic, iic.theta[], lower, upper, color = iic.uncertainty_color[])
     end
 
     return nothing
@@ -118,16 +120,16 @@ function plot_iic_uncertainty!(::Type{PointEstimate}, iic, response)
     return nothing
 end
 
-function plot_iic_aggregate!(::Type{SamplingEstimate}, iic, info, color=iic.color[])
+function plot_iic_aggregate!(::Type{SamplingEstimate}, iic, info, color = iic.color[])
     if !isnothing(iic.aggregate_fun[])
         agg = iic.aggregate_fun[](info)
-        lines!(iic, iic.theta[], agg, cycle=iic.cycle[], color=color)
+        lines!(iic, iic.theta[], agg, cycle = iic.cycle[], color = color)
     end
     return nothing
 end
 
-function plot_iic_aggregate!(::Type{PointEstimate}, iic, info, color=iic.color[])
-    lines!(iic, iic.theta[], info; cycle=iic.cycle[], color=color)
+function plot_iic_aggregate!(::Type{PointEstimate}, iic, info, color = iic.color[])
+    lines!(iic, iic.theta[], info; cycle = iic.cycle[], color = color)
     return nothing
 end
 

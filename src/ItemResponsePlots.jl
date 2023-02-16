@@ -14,13 +14,15 @@ export information_plot, information_plot!
 
 include("utils.jl")
 
-const DEFAULT_VALUES = Ref(Dict(
-    "theta" => -3:0.01:3,
-    "samples" => 1000,
-    "uncertainty_type" => :samples,
-    "quantiles" => ci(0.2),
-    "aggregate_fun" => x -> vec(mean(x, dims=2))
-))
+const DEFAULT_VALUES = Ref(
+    Dict(
+        "theta" => -3:0.01:3,
+        "samples" => 1000,
+        "uncertainty_type" => :samples,
+        "quantiles" => ci(0.2),
+        "aggregate_fun" => x -> vec(mean(x, dims = 2)),
+    ),
+)
 
 """
     getdefault(attribute::String)
