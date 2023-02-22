@@ -12,12 +12,18 @@ The additional `args...` and `kwargs...` are passed to the lower level functions
 function itemplot(model::ItemResponseModel, i, args...; kwargs...)
     fig = Figure()
 
+    # title
+    Label(fig[0, 1:2], "Item plot for item $i", font = :bold)
+
     # item characteristic_curve
     axis_icc = Axis(
         fig[1, 1],
         title = "item characteristic curve",
         xlabel = "ability",
         ylabel = "probability",
+        yrectzoom = false,
+        ypanlock = true,
+        yzoomlock = true,
     )
 
     icc = item_characteristic_curve!(axis_icc, model, i, args...; kwargs...)
@@ -33,6 +39,9 @@ function itemplot(model::ItemResponseModel, i, args...; kwargs...)
         title = "item information curve",
         xlabel = "ability",
         ylabel = "information",
+        yrectzoom = false,
+        ypanlock = true,
+        yzoomlock = true,
     )
 
     item_information_curve!(axis_iic, model, i, args...; kwargs...)
