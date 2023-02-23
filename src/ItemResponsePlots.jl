@@ -5,6 +5,8 @@ using Colors
 using Makie
 using StatsBase
 
+import Makie: @recipe, Attributes, default_theme, theme, plot!
+
 export getdefault, setdefault!
 
 export item_characteristic_curve, item_characteristic_curve!
