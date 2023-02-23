@@ -9,10 +9,10 @@ export getdefault, setdefault!
 
 export item_characteristic_curve, item_characteristic_curve!
 export item_information_curve, item_information_curve!
-export itemplot
-
 export expected_score_plot, expected_score_plot!
 export information_plot, information_plot!
+export itemplot
+export testplot
 
 include("utils.jl")
 
@@ -42,8 +42,10 @@ setdefault!(attribute::String, value) = setindex!(DEFAULT_VALUES[], value, attri
 
 include("item_characteristic_curve.jl")
 include("item_information_curve.jl")
-include("itemplot.jl")
 include("expected_score_plot.jl")
-# include("information_plot.jl")
+include("information_plot.jl")
+
+include("itemplot.jl")
+include("testplot.jl")
 
 end
