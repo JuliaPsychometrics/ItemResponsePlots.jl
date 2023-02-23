@@ -38,9 +38,14 @@ item_characteristic_curve(rasch, 1)
 All plotting functions in ItemResponsePlots.jl implement a variety of customization options. For details see the relevant plotting functions help page (e.g. `?item_characteristic_curve`).
 
 ## Available plots
-Currently ItemResponsePlots supports the following low-level plots,
+Currently ItemResponsePlots supports low-level plotting recipes for
 
 - Item characteristic curves
 - Item information curves
-- Test characteristic / expected score plots
-- Test information plots 
+- Test characteristic / expected score curves
+- Test information curves 
+
+as well as high-level figures for 
+
+- items (item characteristic curve + item information curve)
+- (sub)tests (expected scores + test information curve)
