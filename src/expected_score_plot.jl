@@ -100,7 +100,7 @@ function expected_scores(
     ::Type{<:Dimensionality},
     ::Type{PointEstimate},
     esp,
-) where {F}
+)
     thetas = esp.theta
     model = esp[1]
     scoring_function = esp.scoring_function[]
