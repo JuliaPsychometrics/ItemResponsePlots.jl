@@ -1,9 +1,9 @@
 # ItemResponsePlots.jl
 
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://JuliaPsychometrics.github.io/ItemResponseRecipes.jl/stable/)
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://JuliaPsychometrics.github.io/ItemResponseRecipes.jl/dev/)
-[![Build Status](https://github.com/JuliaPsychometrics/ItemResponseRecipes.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/JuliaPsychometrics/ItemResponseRecipes.jl/actions/workflows/CI.yml?query=branch%3Amain)
-[![Coverage](https://codecov.io/gh/JuliaPsychometrics/ItemResponseRecipes.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/JuliaPsychometrics/ItemResponseRecipes.jl)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://JuliaPsychometrics.github.io/ItemResponsePlots.jl/stable/)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://JuliaPsychometrics.github.io/ItemResponsePlots.jl/dev/)
+[![Build Status](https://github.com/JuliaPsychometrics/ItemResponsePlots.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/JuliaPsychometrics/ItemResponsePlots.jl/actions/workflows/CI.yml?query=branch%3Amain)
+[![Coverage](https://codecov.io/gh/JuliaPsychometrics/ItemResponsePlots.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/JuliaPsychometrics/ItemResponsePlots.jl)
 
 This package provides plotting capabilities for item response models implementing the [AbstractItemResponseModels.jl](https://github.com/JuliaPsychometrics/AbstractItemResponseModels.jl) interface. 
 
@@ -29,7 +29,7 @@ rasch = fit(RaschModel, data, CML())
 Once the parameters are estimated, simply call your desired plotting function. 
 
 For example, item characteristic curves are implemented by the `item_characteristic_curve` function. 
-To plot the item characteristic curve for item `1`, call
+To plot the item characteristic curve for the first item, call
 
 ```julia
 item_characteristic_curve(rasch, 1)

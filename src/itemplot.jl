@@ -7,7 +7,7 @@ The resulting item plot contains the item characteristic curve (left) and the it
 information curve (right).
 
 The additional `args...` and `kwargs...` are passed to the lower level functions
-[item_characteristic_curve](@ref) and [item_information_curve](@ref).
+[`itemcharacteristiccurve`](@ref) and [`iteminformationcurve`](@ref).
 """
 function itemplot(model::ItemResponseModel, i, args...; kwargs...)
     fig = Figure()

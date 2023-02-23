@@ -1,14 +1,14 @@
 ```@meta
-CurrentModule = ItemResponseRecipes
+CurrentModule = ItemResponsePlots
 ```
 
-# ItemResponseRecipes
+# ItemResponsePlots
 
-Documentation for [ItemResponseRecipes](https://github.com/JuliaPsychometrics/ItemResponseRecipes.jl).
+Documentation for [ItemResponsePlots](https://github.com/JuliaPsychometrics/ItemResponsePlots.jl).
 
 ```@index
 ```
 
 ```@autodocs
-Modules = [ItemResponseRecipes]
+Modules = [ItemResponsePlots]
 ```
