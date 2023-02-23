@@ -55,6 +55,6 @@ jobs:
       - run: |
           julia --project=docs -e '
             using Documenter: DocMeta, doctest
-            using ItemResponseRecipes
-            DocMeta.setdocmeta!(ItemResponseRecipes, :DocTestSetup, :(using ItemResponseRecipes); recursive=true)
-            doctest(ItemResponseRecipes)'
+            using ItemResponsePlots
+            DocMeta.setdocmeta!(ItemResponsePlots, :DocTestSetup, :(using ItemResponsePlots); recursive=true)
+            doctest(ItemResponsePlots)'
