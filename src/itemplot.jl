@@ -24,13 +24,10 @@ function itemplot(model::ItemResponseModel, i, args...; kwargs...)
         yrectzoom = false,
         ypanlock = true,
         yzoomlock = true,
+        xautolimitmargin = (0.0, 0.0),
     )
 
-    icc = item_characteristic_curve!(axis_icc, model, i, args...; kwargs...)
-
-    xmin = minimum(icc.attributes.theta[])
-    xmax = maximum(icc.attributes.theta[])
-    xlims!(axis_icc, xmin, xmax)
+    item_characteristic_curve!(axis_icc, model, i, args...; kwargs...)
     ylims!(axis_icc, 0, 1)
 
     # item information curve
@@ -42,10 +39,11 @@ function itemplot(model::ItemResponseModel, i, args...; kwargs...)
         yrectzoom = false,
         ypanlock = true,
         yzoomlock = true,
+        yaxisposition = :right,
+        xautolimitmargin = (0.0, 0.0),
     )
 
     item_information_curve!(axis_iic, model, i, args...; kwargs...)
-    xlims!(axis_iic, xmin, xmax)
     ylims!(axis_iic, 0, nothing)
 
     # general
