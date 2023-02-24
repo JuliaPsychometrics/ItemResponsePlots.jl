@@ -1,25 +1,28 @@
-using ItemResponseRecipes
+using ItemResponsePlots
 using Documenter
 
-DocMeta.setdocmeta!(ItemResponseRecipes, :DocTestSetup, :(using ItemResponseRecipes); recursive=true)
+DocMeta.setdocmeta!(
+    ItemResponsePlots,
+    :DocTestSetup,
+    :(using ItemResponsePlots);
+    recursive = true,
+)
 
 makedocs(;
-    modules=[ItemResponseRecipes],
-    authors="Philipp Gewessler",
-    repo="https://github.com/JuliaPsychometrics/ItemResponseRecipes.jl/blob/{commit}{path}#{line}",
-    sitename="ItemResponseRecipes.jl",
-    format=Documenter.HTML(;
-        prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://JuliaPsychometrics.github.io/ItemResponseRecipes.jl",
-        edit_link="main",
-        assets=String[]
+    modules = [ItemResponsePlots],
+    authors = "Philipp Gewessler",
+    repo = "https://github.com/JuliaPsychometrics/ItemResponsePlots.jl/blob/{commit}{path}#{line}",
+    sitename = "ItemResponsePlots.jl",
+    format = Documenter.HTML(;
+        prettyurls = get(ENV, "CI", "false") == "true",
+        canonical = "https://JuliaPsychometrics.github.io/ItemResponsePlots.jl",
+        edit_link = "main",
+        assets = String[],
     ),
-    pages=[
-        "Home" => "index.md",
-    ]
+    pages = ["Home" => "index.md"],
 )
 
 deploydocs(;
-    repo="github.com/JuliaPsychometrics/ItemResponseRecipes.jl",
-    devbranch="main"
+    repo = "github.com/JuliaPsychometrics/ItemResponsePlots.jl",
+    devbranch = "main",
 )

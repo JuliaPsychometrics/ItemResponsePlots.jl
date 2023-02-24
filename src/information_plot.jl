@@ -1,22 +1,22 @@
 """
-    expected_score_plot(model::ItemResponseModel)
-    expected_score_plot(model::ItemResponseModel, items)
+    information_plot(model::ItemResponseModel)
+    information_plot(model::ItemResponseModel, items)
 
-Create a plot of the expected score for `model`.
+Create a plot of the test information for `model`
 
-If `items` is specified, the expected score is plotted according to the subtest including
+If `items` is specified, the test information is plotted according to the subtest including
 only `items`.
-If `items` is omitted, the expected score is plotted for all items included in `model`.
+if `items` is omitted, the test information is plotted for all items included in `model`.
 
 # Plot attributes
 ## Generic
-- `color`: The color of the expected score plot.
+- `color`: The color of the information plot.
 - `uncertainty_color`: The color of the displayed uncertainty information.
   For plots with uncertainty intervals this is the color of the confidence band.
   For plots with sample based uncertainty information this is the line color of the samples.
-- `theta`: The values of `theta` for which to plot the expected scores.
+- `theta`: The values of `theta` for which to plot the information.
   default: $(getdefault("theta")).
-- `scoring_function`: The scoring function applied to the expected scores.
+- `scoring_function`: The scoring function applied to the information.
 
 ## Specific
 ### Models with `SamplingEstimate`
@@ -31,8 +31,9 @@ If `items` is omitted, the expected score is plotted for all items included in `
   an `x` by `iteration` matrix as input and output a vector of length `x`.
   If `aggregate_fun = nothing` no aggregate is plotted.
   default: `x -> vec(mean(x, dims=2))` (posterior mean)
+
 """
-@recipe(ExpectedScorePlot) do scene
+@recipe(InformationPlot) do scene
     return Attributes(;
         default_theme(scene)...,
         # generic
@@ -50,170 +51,168 @@ If `items` is omitted, the expected score is plotted for all items included in `
     )
 end
 
-function Makie.plot!(esp::ExpectedScorePlot{<:Tuple{<:ItemResponseModel,Any}})
+function Makie.plot!(ip::InformationPlot{<:Tuple{<:ItemResponseModel,Any}})
     # parse arguments
-    model = esp[1]
-    items = esp[2]
+    model = ip[1]
+    items = ip[2]
     rt, pd, id, et = modeltraits(model[])
 
-    scores = expected_scores(rt, pd, id, et, esp, items)
+    info = test_information(rt, pd, id, et, ip, items)
 
-    plot_esp_uncertainty!(rt, pd, id, et, esp, scores)
-    plot_esp_aggregate!(rt, pd, id, et, esp, scores)
+    plot_ip_uncertainty!(rt, pd, id, et, ip, info)
+    plot_ip_aggregate!(rt, pd, id, et, ip, info)
 
-    return esp
+    return ip
 end
 
-function Makie.plot!(esp::ExpectedScorePlot{<:Tuple{<:ItemResponseModel}})
-    # parse arguments
-    model = esp[1]
+function Makie.plot!(ip::InformationPlot{<:Tuple{<:ItemResponseModel}})
+    model = ip[1]
     rt, pd, id, et = modeltraits(model[])
 
-    scores = expected_scores(rt, pd, id, et, esp)
+    info = test_information(rt, pd, id, et, ip)
 
-    plot_esp_uncertainty!(rt, pd, id, et, esp, scores)
-    plot_esp_aggregate!(rt, pd, id, et, esp, scores)
+    plot_ip_uncertainty!(rt, pd, id, et, ip, info)
+    plot_ip_aggregate!(rt, pd, id, et, ip, info)
 
-    return esp
+    return ip
 end
 
-function expected_scores(
+function test_information(
     ::Type{<:ResponseType},
     ::Type{Univariate},
     ::Type{<:Dimensionality},
     ::Type{PointEstimate},
-    esp,
+    ip,
     items,
 )
-    thetas = esp.theta
-    model = esp[1]
-    scoring_function = esp.scoring_function[]
+    thetas = ip.theta
+    model = ip[1]
+    scoring_function = ip.scoring_function[]
 
-    scores =
-        [expected_score(model[], theta, items[]; scoring_function) for theta in thetas[]]
-    return scores
+    info = [information(model[], theta, items[]; scoring_function) for theta in thetas[]]
+    return info
 end
 
-function expected_scores(
+function test_information(
     ::Type{<:ResponseType},
     ::Type{Univariate},
     ::Type{<:Dimensionality},
     ::Type{PointEstimate},
-    esp,
+    ip,
 )
-    thetas = esp.theta
-    model = esp[1]
-    scoring_function = esp.scoring_function[]
-    scores = [expected_score(model[], theta; scoring_function) for theta in thetas[]]
-    return scores
+    thetas = ip.theta
+    model = ip[1]
+    scoring_function = ip.scoring_function[]
+    info = [information(model[], theta; scoring_function) for theta in thetas[]]
+    return info
 end
 
-function expected_scores(
+function test_information(
     ::Type{<:ResponseType},
     ::Type{Univariate},
     ::Type{<:Dimensionality},
     ::Type{SamplingEstimate},
-    esp,
+    ip,
     items,
 )
-    thetas = esp.theta
-    model = esp[1]
-    scoring_function = esp.scoring_function[]
+    thetas = ip.theta
+    model = ip[1]
+    scoring_function = ip.scoring_function[]
 
     nsamples = size(model[].pars, 1)
-    n = ifelse(esp.uncertainty_type == :samples, esp.samples[], nsamples)
+    n = ifelse(ip.uncertainty_type == :samples, ip.samples[], nsamples)
     iter = sample(1:nsamples, n, replace = false)
 
-    scores = Matrix{Float64}(undef, length(thetas[]), n)
+    info = Matrix{Float64}(undef, length(thetas[]), n)
 
     for (i, theta) in enumerate(thetas[])
-        scores[i, :] .= expected_score(model[], theta, items[]; scoring_function)[iter]
+        info[i, :] .= information(model[], theta, items[]; scoring_function)[iter]
     end
 
-    return scores
+    return info
 end
 
-function expected_scores(
+function test_information(
     ::Type{<:ResponseType},
     ::Type{Univariate},
     ::Type{<:Dimensionality},
     ::Type{SamplingEstimate},
-    esp,
+    ip,
 )
-    thetas = esp.theta
-    model = esp[1]
-    scoring_function = esp.scoring_function[]
+    thetas = ip.theta
+    model = ip[1]
+    scoring_function = ip.scoring_function[]
 
     nsamples = size(model[].pars, 1)
-    n = ifelse(esp.uncertainty_type == :samples, esp.samples[], nsamples)
+    n = ifelse(ip.uncertainty_type == :samples, ip.samples[], nsamples)
     iter = sample(1:nsamples, n, replace = false)
 
-    scores = Matrix{Float64}(undef, length(thetas[]), n)
+    info = Matrix{Float64}(undef, length(thetas[]), n)
 
     for (i, theta) in enumerate(thetas[])
-        scores[i, :] .= expected_score(model[], theta; scoring_function)[iter]
+        info[i, :] .= information(model[], theta; scoring_function)[iter]
     end
 
-    return scores
+    return info
 end
 
-function plot_esp_uncertainty!(
+function plot_ip_uncertainty!(
     ::Type{<:ResponseType},
     ::Type{Univariate},
     ::Type{<:Dimensionality},
     ::Type{PointEstimate},
-    esp,
+    ip,
     scores,
 )
     return nothing
 end
 
-function plot_esp_uncertainty!(
+function plot_ip_uncertainty!(
     ::Type{<:ResponseType},
     ::Type{Univariate},
     ::Type{<:Dimensionality},
     ::Type{SamplingEstimate},
-    esp,
+    ip,
     scores,
 )
-    if esp.uncertainty_type[] == :samples
+    if ip.uncertainty_type[] == :samples
         for iter in eachcol(scores)
-            lines!(esp, esp.theta[], iter, color = esp.uncertainty_color[])
+            lines!(ip, ip.theta[], iter, color = ip.uncertainty_color[])
         end
-    elseif esp.uncertainty_type[] == :interval
-        q = [quantile(col, esp.quantiles[]) for col in eachrow(scores)]
+    elseif ip.uncertainty_type[] == :interval
+        q = [quantile(col, ip.quantiles[]) for col in eachrow(scores)]
         lower = first.(q)
         upper = last.(q)
-        band!(esp, esp.theta[], lower, upper, color = esp.uncertainty_color[])
+        band!(ip, ip.theta[], lower, upper, color = ip.uncertainty_color[])
     end
     return nothing
 end
 
-function plot_esp_aggregate!(
+function plot_ip_aggregate!(
     ::Type{<:ResponseType},
     ::Type{Univariate},
     ::Type{<:Dimensionality},
     ::Type{PointEstimate},
-    esp,
+    ip,
     scores,
 )
-    return lines!(esp, esp.theta[], scores; cycle = esp.cycle[], color = esp.color[])
+    return lines!(ip, ip.theta[], scores; cycle = ip.cycle[], color = ip.color[])
 end
 
-function plot_esp_aggregate!(
+function plot_ip_aggregate!(
     ::Type{<:ResponseType},
     ::Type{Univariate},
     ::Type{<:Dimensionality},
     ::Type{SamplingEstimate},
-    esp,
+    ip,
     scores,
 )
-    if !isnothing(esp.aggregate_fun[])
-        agg = esp.aggregate_fun[](scores)
-        lines!(esp, esp.theta[], agg, cycle = esp.cycle[], color = esp.color[])
+    if !isnothing(ip.aggregate_fun[])
+        agg = ip.aggregate_fun[](scores)
+        lines!(ip, ip.theta[], agg, cycle = ip.cycle[], color = ip.color[])
     end
     return nothing
 end
 
-const expected_score_plot = expectedscoreplot
-const expected_score_plot! = expectedscoreplot!
+const information_plot = informationplot
+const information_plot! = informationplot!

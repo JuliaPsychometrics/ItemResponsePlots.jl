@@ -1,6 +1,6 @@
-using ItemResponseRecipes
+using ItemResponsePlots
 using Test
 
-@testset "ItemResponseRecipes.jl" begin
+@testset "ItemResponsePlots.jl" begin
     # Write your tests here.
 end

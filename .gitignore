@@ -1,6 +1,7 @@
+/*.jl
 *.jl.*.cov
 *.jl.cov
 *.jl.mem
 /Manifest.toml
 /docs/build/
-/scripts
+scripts/

@@ -25,7 +25,6 @@ If `response` is omitted, the default plot behaviour depends on `model`:
   to `bins`. For models with `estimation_type(model) == SamplingEstimate` the posterior means
   of ability estimates are used for binning. default: false.
 - `bins`: The number of bins for the observed data. default: 6.
-
 ## Specific
 ### Models with `SamplingEstimate`
 - `samples`: The number of samples to plot. default: `$(getdefault("samples"))`
@@ -41,24 +40,27 @@ If `response` is omitted, the default plot behaviour depends on `model`:
   default: `x -> vec(mean(x, dims=2))` (posterior mean)
 """
 @recipe(ItemCharacteristicCurve) do scene
-    Attributes(;
+    return Attributes(;
         default_theme(scene)...,
         # generic
-        color=theme(scene, :linecolor),
-        uncertainty_color=colorant"#bdbdbd",
-        cycle=[:color],
-        theta=getdefault("theta"),
-        show_data=false,
-        bins=6,
+        color = theme(scene, :linecolor),
+        palette = theme(scene, :palette),
+        uncertainty_color = colorant"#bdbdbd",
+        cycle = [:color],
+        theta = getdefault("theta"),
+        show_data = false,
+        bins = 6,
         # SamplingEstimate
-        samples=getdefault("samples"),
-        uncertainty_type=getdefault("uncertainty_type"),
-        quantiles=getdefault("quantiles"),
-        aggregate_fun=getdefault("aggregate_fun")
+        samples = getdefault("samples"),
+        uncertainty_type = getdefault("uncertainty_type"),
+        quantiles = getdefault("quantiles"),
+        aggregate_fun = getdefault("aggregate_fun"),
     )
 end
 
-function plot!(icc::ItemCharacteristicCurve{<:Tuple{<:ItemResponseModel,<:Integer,<:Real}})
+function Makie.plot!(
+    icc::ItemCharacteristicCurve{<:Tuple{<:ItemResponseModel,<:Integer,<:Real}},
+)
     # parse arguments
     model = icc[1]
     response = icc[3]
@@ -73,7 +75,7 @@ function plot!(icc::ItemCharacteristicCurve{<:Tuple{<:ItemResponseModel,<:Intege
     return icc
 end
 
-function plot!(icc::ItemCharacteristicCurve{<:Tuple{<:ItemResponseModel,<:Integer}})
+function Makie.plot!(icc::ItemCharacteristicCurve{<:Tuple{<:ItemResponseModel,<:Integer}})
     model = icc[1]
     rt, pd, id, et = modeltraits(model[])
 
@@ -83,15 +85,11 @@ function plot!(icc::ItemCharacteristicCurve{<:Tuple{<:ItemResponseModel,<:Intege
         plot_icc_aggregate!(rt, pd, id, et, icc, probs)
     elseif rt <: Union{Nominal,Ordinal}
         responses = 1:4
-        probs = [icc_probabilities(rt, pd, id, et, icc, response) for response in responses]
-
-        # plot uncertainty intervals/samples first, so they don't overlay aggregate values
-        for prob in probs
+        for (i, response) in enumerate(responses)
+            color = icc.palette.color[][i]
+            prob = icc_probabilities(rt, pd, id, et, icc, response)
             plot_icc_uncertainty!(rt, pd, id, et, icc, prob)
-        end
-
-        for prob in probs
-            plot_icc_aggregate!(rt, pd, id, et, icc, prob)
+            plot_icc_aggregate!(rt, pd, id, et, icc, prob, color)
         end
     else
         error("not implemented")
@@ -100,12 +98,19 @@ function plot!(icc::ItemCharacteristicCurve{<:Tuple{<:ItemResponseModel,<:Intege
     return icc
 end
 
-function icc_probabilities(::Type{<:ResponseType}, ::Type{Univariate}, ::Type{<:Dimensionality}, ::Type{SamplingEstimate}, icc, response)
+function icc_probabilities(
+    ::Type{<:ResponseType},
+    ::Type{Univariate},
+    ::Type{<:Dimensionality},
+    ::Type{SamplingEstimate},
+    icc,
+    response,
+)
     model = icc[1]
     item = icc[2]
     nsamples = size(model[].pars, 1)
     n = ifelse(icc.uncertainty_type == :samples, icc.samples[], nsamples)
-    iter = sample(1:nsamples, n, replace=false)
+    iter = sample(1:nsamples, n, replace = false)
 
     probs = Matrix{Float64}(undef, length(icc.theta[]), n)
 
@@ -116,41 +121,79 @@ function icc_probabilities(::Type{<:ResponseType}, ::Type{Univariate}, ::Type{<:
     return probs
 end
 
-function icc_probabilities(::Type{<:ResponseType}, ::Type{Univariate}, ::Type{<:Dimensionality}, ::Type{PointEstimate}, icc, response)
+function icc_probabilities(
+    ::Type{<:ResponseType},
+    ::Type{Univariate},
+    ::Type{<:Dimensionality},
+    ::Type{PointEstimate},
+    icc,
+    response,
+)
     model = icc[1]
     item = icc[2]
     probs = [irf(model[], theta, item[], response) for theta in icc.theta[]]
     return probs
 end
 
-function plot_icc_uncertainty!(::Type{<:ResponseType}, ::Type{Univariate}, ::Type{<:Dimensionality}, ::Type{SamplingEstimate}, icc, probs)
+function plot_icc_uncertainty!(
+    ::Type{<:ResponseType},
+    ::Type{Univariate},
+    ::Type{<:Dimensionality},
+    ::Type{SamplingEstimate},
+    icc,
+    probs,
+)
     if icc.uncertainty_type[] == :samples
         for iter in eachcol(probs)
-            lines!(icc, icc.theta[], iter, color=icc.uncertainty_color[])
+            lines!(icc, icc.theta[], iter, color = icc.uncertainty_color[])
         end
     elseif icc.uncertainty_type[] == :interval
         q = [quantile(col, icc.quantiles[]) for col in eachrow(probs)]
         lower = first.(q)
         upper = last.(q)
-        band!(icc, icc.theta[], lower, upper, color=icc.uncertainty_color[])
+        band!(icc, icc.theta[], lower, upper, color = icc.uncertainty_color[])
     end
     return nothing
 end
 
-function plot_icc_uncertainty!(::Type{<:ResponseType}, ::Type{Univariate}, ::Type{<:Dimensionality}, ::Type{PointEstimate}, icc, probs)
+function plot_icc_uncertainty!(
+    ::Type{<:ResponseType},
+    ::Type{Univariate},
+    ::Type{<:Dimensionality},
+    ::Type{PointEstimate},
+    icc,
+    probs,
+    color = icc.color[],
+)
     return nothing
 end
 
-function plot_icc_aggregate!(::Type{<:ResponseType}, ::Type{Univariate}, ::Type{<:Dimensionality}, ::Type{SamplingEstimate}, icc, probs)
+function plot_icc_aggregate!(
+    ::Type{<:ResponseType},
+    ::Type{Univariate},
+    ::Type{<:Dimensionality},
+    ::Type{SamplingEstimate},
+    icc,
+    probs,
+    color = icc.color[],
+)
     if !isnothing(icc.aggregate_fun[])
         agg = icc.aggregate_fun[](probs)
-        lines!(icc, icc.theta[], agg, cycle=icc.cycle[], color=icc.color[])
+        lines!(icc, icc.theta[], agg, cycle = icc.cycle[], color = color)
     end
     return nothing
 end
 
-function plot_icc_aggregate!(::Type{<:ResponseType}, ::Type{Univariate}, ::Type{<:Dimensionality}, ::Type{PointEstimate}, icc, probs)
-    lines!(icc, icc.theta[], probs; cycle=icc.cycle[], color=icc.color[])
+function plot_icc_aggregate!(
+    ::Type{<:ResponseType},
+    ::Type{Univariate},
+    ::Type{<:Dimensionality},
+    ::Type{PointEstimate},
+    icc,
+    probs,
+    color = icc.color[],
+)
+    return lines!(icc, icc.theta[], probs; cycle = icc.cycle[], color = color)
 end
 
 const item_characteristic_curve = itemcharacteristiccurve
