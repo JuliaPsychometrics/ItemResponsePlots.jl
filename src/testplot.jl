@@ -7,7 +7,7 @@ The resulting plot contains the test characteristic curve/expected scores (left)
 test information curve (right).
 
 The additional `args...` and `kwargs...` are passed to the lower level plotting functions
-[`expectedscoreplot`](@ref) and [`informationplot`](@ref).
+[`expected_score_plot`](@ref) and [`information_plot`](@ref).
 """
 function testplot(model::ItemResponseModel, args...; kwargs...)
     fig = Figure()
