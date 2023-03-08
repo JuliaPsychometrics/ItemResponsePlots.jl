@@ -33,7 +33,6 @@ function testplot(model::ItemResponseModel, args...; kwargs...)
     )
 
     expected_score_plot!(axis_esp, model, args...; kwargs...)
-    ylims!(axis_esp, 0, nothing)
 
     # test information
     axis_tif = Axis(

@@ -24,7 +24,7 @@ const DEFAULT_VALUES = Ref(
         "samples" => 1000,
         "uncertainty_type" => :samples,
         "quantiles" => ci(0.2),
-        "aggregate_fun" => x -> vec(mean(x, dims = 2)),
+        "aggregate_fun" => mean,
     ),
 )
 

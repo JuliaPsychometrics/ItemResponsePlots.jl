@@ -6,3 +6,5 @@
 /docs/build/
 scripts/
 .vscode
+
+.DS_Store

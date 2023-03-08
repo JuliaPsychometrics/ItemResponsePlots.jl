@@ -28,10 +28,9 @@ if `items` is omitted, the test information is plotted for all items included in
 - `quantiles`: The lower and upper quantile for uncertainty intervals.
   default: `$(getdefault("quantiles"))`
 - `aggregate_fun`: A function that aggregates MCMC samples. The provided function must take
-  an `x` by `iteration` matrix as input and output a vector of length `x`.
+  a vector as input and output a scalar value.
   If `aggregate_fun = nothing` no aggregate is plotted.
-  default: `x -> vec(mean(x, dims=2))` (posterior mean)
-
+  default: $(getdefault("aggregate_fun"))
 """
 @recipe(InformationPlot) do scene
     return Attributes(;
@@ -208,7 +207,8 @@ function plot_ip_aggregate!(
     scores,
 )
     if !isnothing(ip.aggregate_fun[])
-        agg = ip.aggregate_fun[](scores)
+        f = ip.aggregate_fun[]
+        agg = map(f, eachrow(scores))
         lines!(ip, ip.theta[], agg, cycle = ip.cycle[], color = ip.color[])
     end
     return nothing
