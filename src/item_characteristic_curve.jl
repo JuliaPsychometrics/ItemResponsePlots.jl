@@ -35,9 +35,9 @@ If `response` is omitted, the default plot behaviour depends on `model`:
 - `quantiles`: The lower and upper quantile for uncertainty intervals.
   default: `$(getdefault("quantiles"))`
 - `aggregate_fun`: A function that aggregates MCMC samples. The provided function must take
-  an `x` by `iteration` matrix as input and output a vector of length `x`.
+  a vector as input and output a scalar value.
   If `aggregate_fun = nothing` no aggregate is plotted.
-  default: `x -> vec(mean(x, dims=2))` (posterior mean)
+  default: $(getdefault("aggregate_fun"))
 """
 @recipe(ItemCharacteristicCurve) do scene
     return Attributes(;
@@ -178,9 +178,11 @@ function plot_icc_aggregate!(
     color = icc.color[],
 )
     if !isnothing(icc.aggregate_fun[])
-        agg = icc.aggregate_fun[](probs)
-        lines!(icc, icc.theta[], agg, cycle = icc.cycle[], color = color)
+        f = icc.aggregate_fun[]
+        agg = map(f, eachrow(probs))
+        lines!(icc, icc.theta[], agg, cycle = icc.cycle[], color = icc.color[])
     end
+
     return nothing
 end
 
