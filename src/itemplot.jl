@@ -9,7 +9,7 @@ information curve (right).
 The additional `args...` and `kwargs...` are passed to the lower level functions
 [`item_characteristic_curve`](@ref) and [`item_information_curve`](@ref).
 """
-function itemplot(model::ItemResponseModel, i, args...; kwargs...)
+function itemplot(model, i, args...; kwargs...)
     fig = Figure()
 
     # title
@@ -27,7 +27,7 @@ function itemplot(model::ItemResponseModel, i, args...; kwargs...)
         xautolimitmargin = (0.0, 0.0),
     )
 
-    item_characteristic_curve!(axis_icc, model, i, args...; kwargs...)
+    icc = item_characteristic_curve!(axis_icc, model, i, args...; kwargs...)
     ylims!(axis_icc, 0, 1)
 
     # item information curve

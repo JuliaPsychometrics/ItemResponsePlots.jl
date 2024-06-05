@@ -5,8 +5,8 @@
 Create a plot of the item information curve for `response` of `item`.
 
 If `response` is omitted, the default plot behaviour depends on `model`:
-- For models where `response_type(model) == Dichotomous` the item information curve for
-  response = 1 is plotted.
+- For models where `response_type(model) == Dichotomous` the total item information curve is
+  plotted.
 - For models where `response_type(model) <: Union{Nominal, Ordinal}` all category information
   curves are plotted.
 
@@ -50,9 +50,7 @@ If `response` is omitted, the default plot behaviour depends on `model`:
     )
 end
 
-function Makie.plot!(
-    iic::ItemInformationCurve{<:Tuple{<:ItemResponseModel,<:Integer,<:Real}},
-)
+function Makie.plot!(iic::ItemInformationCurve{<:Tuple{<:Any,<:Any,<:Real}})
     # parse arguments
     model = iic[1]
     response = iic[3]
@@ -67,21 +65,35 @@ function Makie.plot!(
     return iic
 end
 
-function Makie.plot!(iic::ItemInformationCurve{<:Tuple{<:ItemResponseModel,<:Integer}})
+function Makie.plot!(iic::ItemInformationCurve{<:Tuple{<:Any,<:Any}})
     model = iic[1]
     rt, pd, id, et = modeltraits(model[])
 
     if rt <: Dichotomous
-        info = iic_information(et, iic, 1)
+        info = iic_information(et, iic)
         plot_iic_uncertainty!(et, iic, info)
         plot_iic_aggregate!(et, iic, info)
     elseif rt <: Union{Nominal,Ordinal}
-        responses = 1:4
-        for (i, response) in enumerate(responses)
+        # TODO: find a way for a robust way to fetch number of categories
+        has_responses = true
+        i = 0
+
+        while has_responses
+            i += 1
             color = iic.palette.color[][i]
-            info = iic_information(et, iic, response)
-            plot_iic_uncertainty!(et, iic, info)
-            plot_iic_aggregate!(et, iic, info, color)
+
+            try
+                info = iic_information(et, iic, i)
+                plot_iic_uncertainty!(et, iic, info)
+                plot_iic_aggregate!(et, iic, info, color)
+            catch e
+                if e isa BoundsError
+                    has_responses = false
+                    break
+                else
+                    rethrow(e)
+                end
+            end
         end
     else
         error("Not implemented for ResponseType $rt")
@@ -110,6 +122,13 @@ function iic_information(::Type{PointEstimate}, iic, response)
     model = iic[1]
     item = iic[2]
     info = [iif(model[], theta, item[], response) for theta in iic.theta[]]
+    return info
+end
+
+function iic_information(::Type{PointEstimate}, iic)
+    model = iic[1]
+    item = iic[2]
+    info = [information(model[], theta, item[]) for theta in iic.theta[]]
     return info
 end
 
