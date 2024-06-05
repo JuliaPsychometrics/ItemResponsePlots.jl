@@ -75,6 +75,21 @@ function Makie.plot!(
     return icc
 end
 
+function Makie.plot!(icc::ItemCharacteristicCurve{<:Tuple{<:DataType,<:Any,<:Real}})
+    # parse arguments
+    model = icc[1]
+    response = icc[3]
+    rt, pd, id, et = modeltraits(model[])
+
+    checkresponsetype(rt, response[])
+
+    probs = icc_probabilities(rt, pd, id, et, icc, response[])
+    plot_icc_uncertainty!(rt, pd, id, et, icc, probs)
+    plot_icc_aggregate!(rt, pd, id, et, icc, probs)
+
+    return icc
+end
+
 function Makie.plot!(icc::ItemCharacteristicCurve{<:Tuple{<:ItemResponseModel,<:Integer}})
     model = icc[1]
     rt, pd, id, et = modeltraits(model[])
@@ -85,6 +100,29 @@ function Makie.plot!(icc::ItemCharacteristicCurve{<:Tuple{<:ItemResponseModel,<:
         plot_icc_aggregate!(rt, pd, id, et, icc, probs)
     elseif rt <: Union{Nominal,Ordinal}
         responses = 1:4
+        for (i, response) in enumerate(responses)
+            color = icc.palette.color[][i]
+            prob = icc_probabilities(rt, pd, id, et, icc, response)
+            plot_icc_uncertainty!(rt, pd, id, et, icc, prob)
+            plot_icc_aggregate!(rt, pd, id, et, icc, prob, color)
+        end
+    else
+        error("not implemented")
+    end
+
+    return icc
+end
+
+function Makie.plot!(icc::ItemCharacteristicCurve{<:Tuple{<:DataType,<:Any}})
+    M = icc[1]
+    beta = icc[2]
+    rt, pd, id, et = modeltraits(M[])
+
+    if rt <: Dichotomous
+        probs = icc_probabilities(rt, pd, id, et, icc, 1)
+        plot_icc_aggregate!(rt, pd, id, et, icc, probs)
+    elseif rt <: Union{Nominal,Ordinal}
+        responses = 1:(length(beta[].t)+1)
         for (i, response) in enumerate(responses)
             color = icc.palette.color[][i]
             prob = icc_probabilities(rt, pd, id, et, icc, response)
