@@ -9,7 +9,7 @@ test information curve (right).
 The additional `args...` and `kwargs...` are passed to the lower level plotting functions
 [`expected_score_plot`](@ref) and [`information_plot`](@ref).
 """
-function testplot(model::ItemResponseModel, args...; kwargs...)
+function testplot(model, args...; kwargs...)
     fig = Figure()
 
     if length(args) > 0

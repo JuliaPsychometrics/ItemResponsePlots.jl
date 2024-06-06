@@ -50,7 +50,7 @@ if `items` is omitted, the test information is plotted for all items included in
     )
 end
 
-function Makie.plot!(ip::InformationPlot{<:Tuple{<:ItemResponseModel,Any}})
+function Makie.plot!(ip::InformationPlot{<:Tuple{<:Any,<:Any}})
     # parse arguments
     model = ip[1]
     items = ip[2]
