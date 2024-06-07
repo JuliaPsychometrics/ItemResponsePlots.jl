@@ -50,7 +50,7 @@ If `items` is omitted, the expected score is plotted for all items included in `
     )
 end
 
-function Makie.plot!(esp::ExpectedScorePlot{<:Tuple{<:ItemResponseModel,Any}})
+function Makie.plot!(esp::ExpectedScorePlot{<:Tuple{<:Any,<:Any}})
     # parse arguments
     model = esp[1]
     items = esp[2]

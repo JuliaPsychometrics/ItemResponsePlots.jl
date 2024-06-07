@@ -12,3 +12,7 @@ function modeltraits(m::ItemResponseModel)
         estimation_type(m),
     )
 end
+
+function modeltraits(M::Type{<:ItemResponseModel})
+    return (response_type(M), Univariate, Univariate, PointEstimate)
+end
