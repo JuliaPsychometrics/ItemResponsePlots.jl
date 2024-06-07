@@ -1,5 +1,5 @@
 """
-    testplot(model::ItemResponseModel, args...; kwargs...)
+    testplot(model, args...; kwargs...)
 
 Create a plot for test characteristics of `model`.
 
