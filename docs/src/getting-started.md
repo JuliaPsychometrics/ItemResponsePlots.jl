@@ -24,7 +24,7 @@ In this example we create a plot for the whole test (5 items) by calling the [`t
 [`testplot`](@ref) only requires the fitted model (`model`) as the single function argument.
 
 ```@example getting-started
-using GLMakie
+using CairoMakie
 using ItemResponsePlots
 
 testplot(model)
