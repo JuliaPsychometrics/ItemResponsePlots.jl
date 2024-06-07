@@ -5,11 +5,9 @@ DocumenterVitepress = "4710194d-e776-4893-9690-8d956a29c365"
 GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
 ItemResponseFunctions = "18e85bec-f2a0-4122-b3a6-37651333b522"
 ItemResponsePlots = "05da4de1-0d5c-4141-b8ea-157f25fdd429"
-RaschModels = "bb2289d3-8377-491f-981b-126dc716160d"
 
 [compat]
+CairoMakie = "0.12"
 Documenter = "1"
 DocumenterVitepress = "0.1"
 ItemResponseFunctions = "0.1"
-RaschModels = "0.1"
-CairoMakie = "0.12"
