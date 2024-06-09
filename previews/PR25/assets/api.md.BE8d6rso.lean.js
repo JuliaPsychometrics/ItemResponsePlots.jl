@@ -1,1 +1,0 @@
-import{_ as e,c as t,o as i,a6 as s}from"./chunks/framework.DBpRcs4U.js";const b=JSON.parse('{"title":"API","description":"","frontmatter":{},"headers":[],"relativePath":"api.md","filePath":"api.md","lastUpdated":null}'),o={name:"api.md"},a=s("",25),l=[a];function r(n,p,d,c,h,u){return i(),t("div",null,l)}const g=e(o,[["render",r]]);export{b as __pageData,g as default};
