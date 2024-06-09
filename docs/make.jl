@@ -21,7 +21,12 @@ makedocs(
         "Home" => "index.md",
         "Getting Started" => "getting-started.md",
         "Examples" => [
-            "Recipes" => [],
+            "Recipes" => [
+                "expected_score_plot" => "examples/recipes/expected_score_plot.md",
+                "information_plot" => "examples/recipes/information_plot.md",
+                "item_characteristic_curve" => "examples/recipes/item_characteristic_curve.md",
+                "item_information_curve" => "examples/recipes/item_information_curve.md",
+            ],
             "Plots" => [
                 "itemplot" => "examples/plots/itemplot.md",
                 "testplot" => "examples/plots/testplot.md",

@@ -39,7 +39,7 @@ To install this package simply use julias package management system.
 
 ## How do I use this package?
 ItemResponsePlots.jl integrates with the interface designed in [AbstractItemResponseModels.jl](https://github.com/juliapsychometrics/AbstractItemResponseModels.jl).
-This means that all packages implementing the interface can automatically use the plotting recipes and plots defined in ItemResponsePlots.jl
+This means that all packages implementing the interface can automatically use the plotting recipes and plots defined in ItemResponsePlots.jl.
 
 Currently the list of packages includes:
 
