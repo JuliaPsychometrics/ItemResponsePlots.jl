@@ -1,3 +1,12 @@
 [deps]
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+DocumenterVitepress = "4710194d-e776-4893-9690-8d956a29c365"
+ItemResponseFunctions = "18e85bec-f2a0-4122-b3a6-37651333b522"
 ItemResponsePlots = "05da4de1-0d5c-4141-b8ea-157f25fdd429"
+
+[compat]
+CairoMakie = "0.12"
+Documenter = "1"
+DocumenterVitepress = "0.1"
+ItemResponseFunctions = "0.1"

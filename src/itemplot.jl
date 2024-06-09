@@ -1,5 +1,5 @@
 """
-    itemplot(model::ItemResponseModel, item, args...; kwargs...)
+    itemplot(model, item, args...; kwargs...)
 
 Create an item plot for `item` of `model`.
 
