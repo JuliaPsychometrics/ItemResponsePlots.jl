@@ -27,7 +27,7 @@ function Makie.plot!(icc::ItemCharacteristicCurve{<:Tuple{<:Any,<:Any,<:Real}})
 
     probs = icc_probabilities(rt, pd, id, et, icc, response[])
     plot_icc_uncertainty!(rt, pd, id, et, icc, probs)
-    plot_icc_aggregate!(rt, pd, id, et, icc, probs)
+    plot_icc_aggregate!(rt, pd, id, et, icc, probs, label = "response = $(response[])")
 
     return icc
 end

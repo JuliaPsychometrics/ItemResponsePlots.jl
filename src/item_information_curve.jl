@@ -25,7 +25,7 @@ function Makie.plot!(iic::ItemInformationCurve{<:Tuple{<:Any,<:Any,<:Real}})
 
     info = iic_information(et, iic, response[])
     plot_iic_uncertainty!(et, iic, info)
-    plot_iic_aggregate!(et, iic, info)
+    plot_iic_aggregate!(et, iic, info, label = "response = $(response[])")
 
     return iic
 end

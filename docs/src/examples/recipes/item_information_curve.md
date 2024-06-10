@@ -45,7 +45,7 @@ using ItemResponseFunctions
 
 item = (a = 1.43, b = 0.2, t = (-1.2, 0.2, 0.5, 0.9))
 
-item_information_curve!(ax, GRSM, item)
+item_information_curve(GRSM, item)
 
 axislegend(position = :lt)
 
