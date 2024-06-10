@@ -50,7 +50,7 @@ function Makie.plot!(iic::ItemInformationCurve{<:Tuple{<:Any,<:Any}})
             try
                 info = iic_information(et, iic, i)
                 plot_iic_uncertainty!(et, iic, info)
-                plot_iic_aggregate!(et, iic, info; color, label = "response $i")
+                plot_iic_aggregate!(et, iic, info; color, label = "response = $i")
             catch e
                 if e isa BoundsError
                     has_responses = false
