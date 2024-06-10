@@ -50,7 +50,7 @@ function Makie.plot!(iic::ItemInformationCurve{<:Tuple{<:Any,<:Any}})
             try
                 info = iic_information(et, iic, i)
                 plot_iic_uncertainty!(et, iic, info)
-                plot_iic_aggregate!(et, iic, info, color)
+                plot_iic_aggregate!(et, iic, info; color, label = "response $i")
             catch e
                 if e isa BoundsError
                     has_responses = false
@@ -116,18 +116,24 @@ function plot_iic_uncertainty!(::Type{PointEstimate}, iic, response)
     return nothing
 end
 
-function plot_iic_aggregate!(::Type{SamplingEstimate}, iic, info, color = iic.color[])
+function plot_iic_aggregate!(::Type{SamplingEstimate}, iic, info; kwargs...)
     if !isnothing(iic.aggregate_fun[])
         f = iic.aggregate_fun[]
         agg = map(f, eachrow(info))
-        lines!(iic, iic.theta[], agg, cycle = iic.cycle[], color = iic.color[])
+        lines!(iic, iic.theta[], agg; cycle = iic.cycle[], kwargs...)
     end
     return nothing
 end
 
-function plot_iic_aggregate!(::Type{PointEstimate}, iic, info, color = iic.color[])
-    lines!(iic, iic.theta[], info; cycle = iic.cycle[], color = color)
+function plot_iic_aggregate!(::Type{PointEstimate}, iic, info; kwargs...)
+    lines!(iic, iic.theta[], info; cycle = iic.cycle[], kwargs...)
     return nothing
+end
+
+# this is required to make plot labels work
+# https://github.com/MakieOrg/Makie.jl/issues/1148
+function Makie.get_plots(iic::ItemInformationCurve)
+    return iic.plots
 end
 
 """

@@ -48,6 +48,7 @@ function itemplot(model, i, args...; kwargs...)
 
     # general
     linkxaxes!(axis_icc, axis_iic)
+    Legend(fig[2, 1:2], axis_icc, orientation = :horizontal, framevisible = false)
 
     return fig
 end
