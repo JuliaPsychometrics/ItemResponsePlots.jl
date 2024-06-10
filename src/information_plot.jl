@@ -4,7 +4,7 @@
         # generic
         color = theme(scene, :linecolor),
         palette = theme(scene, :palette),
-        uncertainty_color = colorant"#bdbdbd",
+        uncertainty_color = colorant"#d4d4d4",
         cycle = [:color],
         theta = getdefault("theta"),
         scoring_function = identity,

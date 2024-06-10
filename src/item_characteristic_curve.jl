@@ -4,7 +4,7 @@
         # generic
         color = theme(scene, :linecolor),
         palette = theme(scene, :palette),
-        uncertainty_color = colorant"#bdbdbd",
+        uncertainty_color = colorant"#d4d4d4",
         cycle = [:color],
         theta = getdefault("theta"),
         show_data = false,
@@ -39,7 +39,7 @@ function Makie.plot!(icc::ItemCharacteristicCurve{<:Tuple{<:Any,<:Any}})
     if rt <: Dichotomous
         probs = icc_probabilities(rt, pd, id, et, icc, 1)
         plot_icc_uncertainty!(rt, pd, id, et, icc, probs)
-        plot_icc_aggregate!(rt, pd, id, et, icc, probs)
+        plot_icc_aggregate!(rt, pd, id, et, icc, probs, label = "response = 1")
     elseif rt <: Union{Nominal,Ordinal}
         # TODO: find a way for a robust way to fetch number of categories
         has_responses = true
@@ -52,7 +52,16 @@ function Makie.plot!(icc::ItemCharacteristicCurve{<:Tuple{<:Any,<:Any}})
             try
                 prob = icc_probabilities(rt, pd, id, et, icc, i)
                 plot_icc_uncertainty!(rt, pd, id, et, icc, prob)
-                plot_icc_aggregate!(rt, pd, id, et, icc, prob; color, label = "response $i")
+                plot_icc_aggregate!(
+                    rt,
+                    pd,
+                    id,
+                    et,
+                    icc,
+                    prob;
+                    color,
+                    label = "response = $i",
+                )
             catch e
                 if e isa BoundsError
                     has_responses = false
