@@ -4,7 +4,7 @@
         # generic
         color = theme(scene, :linecolor),
         palette = theme(scene, :palette),
-        uncertainty_color = colorant"#bdbdbd",
+        uncertainty_color = colorant"#d4d4d4",
         cycle = [:color],
         theta = getdefault("theta"),
         show_data = false,
@@ -27,7 +27,7 @@ function Makie.plot!(icc::ItemCharacteristicCurve{<:Tuple{<:Any,<:Any,<:Real}})
 
     probs = icc_probabilities(rt, pd, id, et, icc, response[])
     plot_icc_uncertainty!(rt, pd, id, et, icc, probs)
-    plot_icc_aggregate!(rt, pd, id, et, icc, probs)
+    plot_icc_aggregate!(rt, pd, id, et, icc, probs, label = "response = $(response[])")
 
     return icc
 end
@@ -39,7 +39,7 @@ function Makie.plot!(icc::ItemCharacteristicCurve{<:Tuple{<:Any,<:Any}})
     if rt <: Dichotomous
         probs = icc_probabilities(rt, pd, id, et, icc, 1)
         plot_icc_uncertainty!(rt, pd, id, et, icc, probs)
-        plot_icc_aggregate!(rt, pd, id, et, icc, probs)
+        plot_icc_aggregate!(rt, pd, id, et, icc, probs, label = "response = 1")
     elseif rt <: Union{Nominal,Ordinal}
         # TODO: find a way for a robust way to fetch number of categories
         has_responses = true
@@ -52,7 +52,16 @@ function Makie.plot!(icc::ItemCharacteristicCurve{<:Tuple{<:Any,<:Any}})
             try
                 prob = icc_probabilities(rt, pd, id, et, icc, i)
                 plot_icc_uncertainty!(rt, pd, id, et, icc, prob)
-                plot_icc_aggregate!(rt, pd, id, et, icc, prob, color)
+                plot_icc_aggregate!(
+                    rt,
+                    pd,
+                    id,
+                    et,
+                    icc,
+                    prob;
+                    color,
+                    label = "response = $i",
+                )
             catch e
                 if e isa BoundsError
                     has_responses = false
@@ -145,13 +154,13 @@ function plot_icc_aggregate!(
     ::Type{<:Dimensionality},
     ::Type{SamplingEstimate},
     icc,
-    probs,
-    color = icc.color[],
+    probs;
+    kwargs...,
 )
     if !isnothing(icc.aggregate_fun[])
         f = icc.aggregate_fun[]
         agg = map(f, eachrow(probs))
-        lines!(icc, icc.theta[], agg, cycle = icc.cycle[], color = icc.color[])
+        lines!(icc, icc.theta[], agg; cycle = icc.cycle[], kwargs...)
     end
 
     return nothing
@@ -163,10 +172,16 @@ function plot_icc_aggregate!(
     ::Type{<:Dimensionality},
     ::Type{PointEstimate},
     icc,
-    probs,
-    color = icc.color[],
+    probs;
+    kwargs...,
 )
-    return lines!(icc, icc.theta[], probs; cycle = icc.cycle[], color = color)
+    return lines!(icc, icc.theta[], probs; cycle = icc.cycle[], kwargs...)
+end
+
+# this is required to make plot labels work
+# https://github.com/MakieOrg/Makie.jl/issues/1148
+function Makie.get_plots(icc::ItemCharacteristicCurve)
+    return icc.plots
 end
 
 """

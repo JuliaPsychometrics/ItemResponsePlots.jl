@@ -45,12 +45,9 @@ using ItemResponseFunctions
 
 item = (a = 1.43, b = 0.2, t = (-1.2, 0.2, 0.5, 0.9))
 
-fig = Figure()
-ax = Axis(fig[1, 1])
+item_information_curve(GRSM, item)
 
-item_information_curve!(ax, GRSM, item)
-
-# Legend(fig[1, 2], ax, "category", framevisible = false)
+axislegend(position = :lt)
 
 save("iic-3.png", current_figure(), px_per_unit = 2, size = (500, 300)) #hide
 nothing # hide
