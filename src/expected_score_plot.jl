@@ -22,10 +22,10 @@ function Makie.plot!(esp::ExpectedScorePlot{<:Tuple{<:Any,<:Any}})
     items = esp[2]
     rt, pd, id, et = modeltraits(model[])
 
-    scores = expected_scores(rt, pd, id, et, esp, items)
+    scores = expected_scores(rt, Val(pd), id, et, esp, items)
 
-    plot_esp_uncertainty!(rt, pd, id, et, esp, scores)
-    plot_esp_aggregate!(rt, pd, id, et, esp, scores)
+    plot_esp_uncertainty!(rt, Val(pd), id, et, esp, scores)
+    plot_esp_aggregate!(rt, Val(pd), id, et, esp, scores)
 
     return esp
 end
@@ -35,18 +35,18 @@ function Makie.plot!(esp::ExpectedScorePlot{<:Tuple{<:ItemResponseModel}})
     model = esp[1]
     rt, pd, id, et = modeltraits(model[])
 
-    scores = expected_scores(rt, pd, id, et, esp)
+    scores = expected_scores(rt, Val(pd), id, et, esp)
 
-    plot_esp_uncertainty!(rt, pd, id, et, esp, scores)
-    plot_esp_aggregate!(rt, pd, id, et, esp, scores)
+    plot_esp_uncertainty!(rt, Val(pd), id, et, esp, scores)
+    plot_esp_aggregate!(rt, Val(pd), id, et, esp, scores)
 
     return esp
 end
 
 function expected_scores(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{PointEstimate},
     esp,
     items,
@@ -62,8 +62,8 @@ end
 
 function expected_scores(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{PointEstimate},
     esp,
 )
@@ -76,8 +76,8 @@ end
 
 function expected_scores(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{SamplingEstimate},
     esp,
     items,
@@ -101,8 +101,8 @@ end
 
 function expected_scores(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{SamplingEstimate},
     esp,
 )
@@ -125,8 +125,8 @@ end
 
 function plot_esp_uncertainty!(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{PointEstimate},
     esp,
     scores,
@@ -136,8 +136,8 @@ end
 
 function plot_esp_uncertainty!(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{SamplingEstimate},
     esp,
     scores,
@@ -157,8 +157,8 @@ end
 
 function plot_esp_aggregate!(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{PointEstimate},
     esp,
     scores,
@@ -168,8 +168,8 @@ end
 
 function plot_esp_aggregate!(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{SamplingEstimate},
     esp,
     scores,

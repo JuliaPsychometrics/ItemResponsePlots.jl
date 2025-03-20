@@ -25,9 +25,9 @@ function Makie.plot!(icc::ItemCharacteristicCurve{<:Tuple{<:Any,<:Any,<:Real}})
 
     checkresponsetype(rt, response[])
 
-    probs = icc_probabilities(rt, pd, id, et, icc, response[])
-    plot_icc_uncertainty!(rt, pd, id, et, icc, probs)
-    plot_icc_aggregate!(rt, pd, id, et, icc, probs, label = "response = $(response[])")
+    probs = icc_probabilities(rt, Val(pd), id, et, icc, response[])
+    plot_icc_uncertainty!(rt, Val(pd), id, et, icc, probs)
+    plot_icc_aggregate!(rt, Val(pd), id, et, icc, probs, label = "response = $(response[])")
 
     return icc
 end
@@ -37,9 +37,9 @@ function Makie.plot!(icc::ItemCharacteristicCurve{<:Tuple{<:Any,<:Any}})
     rt, pd, id, et = modeltraits(model[])
 
     if rt <: Dichotomous
-        probs = icc_probabilities(rt, pd, id, et, icc, 1)
-        plot_icc_uncertainty!(rt, pd, id, et, icc, probs)
-        plot_icc_aggregate!(rt, pd, id, et, icc, probs, label = "response = 1")
+        probs = icc_probabilities(rt, Val(pd), id, et, icc, 1)
+        plot_icc_uncertainty!(rt, Val(pd), id, et, icc, probs)
+        plot_icc_aggregate!(rt, Val(pd), id, et, icc, probs, label = "response = 1")
     elseif rt <: Union{Nominal,Ordinal}
         # TODO: find a way for a robust way to fetch number of categories
         has_responses = true
@@ -50,11 +50,11 @@ function Makie.plot!(icc::ItemCharacteristicCurve{<:Tuple{<:Any,<:Any}})
             color = icc.palette.color[][i]
 
             try
-                prob = icc_probabilities(rt, pd, id, et, icc, i)
-                plot_icc_uncertainty!(rt, pd, id, et, icc, prob)
+                prob = icc_probabilities(rt, Val(pd), id, et, icc, i)
+                plot_icc_uncertainty!(rt, Val(pd), id, et, icc, prob)
                 plot_icc_aggregate!(
                     rt,
-                    pd,
+                    Val(pd),
                     id,
                     et,
                     icc,
@@ -80,8 +80,8 @@ end
 
 function icc_probabilities(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{SamplingEstimate},
     icc,
     response,
@@ -103,8 +103,8 @@ end
 
 function icc_probabilities(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{PointEstimate},
     icc,
     response,
@@ -117,8 +117,8 @@ end
 
 function plot_icc_uncertainty!(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{SamplingEstimate},
     icc,
     probs,
@@ -138,8 +138,8 @@ end
 
 function plot_icc_uncertainty!(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{PointEstimate},
     icc,
     probs,
@@ -150,8 +150,8 @@ end
 
 function plot_icc_aggregate!(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{SamplingEstimate},
     icc,
     probs;
@@ -168,8 +168,8 @@ end
 
 function plot_icc_aggregate!(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{PointEstimate},
     icc,
     probs;
