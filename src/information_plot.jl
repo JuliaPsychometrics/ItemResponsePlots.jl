@@ -22,10 +22,10 @@ function Makie.plot!(ip::InformationPlot{<:Tuple{<:Any,<:Any}})
     items = ip[2]
     rt, pd, id, et = modeltraits(model[])
 
-    info = test_information(rt, pd, id, et, ip, items)
+    info = test_information(rt, Val(pd), id, et, ip, items)
 
-    plot_ip_uncertainty!(rt, pd, id, et, ip, info)
-    plot_ip_aggregate!(rt, pd, id, et, ip, info)
+    plot_ip_uncertainty!(rt, Val(pd), id, et, ip, info)
+    plot_ip_aggregate!(rt, Val(pd), id, et, ip, info)
 
     return ip
 end
@@ -34,18 +34,18 @@ function Makie.plot!(ip::InformationPlot{<:Tuple{<:ItemResponseModel}})
     model = ip[1]
     rt, pd, id, et = modeltraits(model[])
 
-    info = test_information(rt, pd, id, et, ip)
+    info = test_information(rt, Val(pd), id, et, ip)
 
-    plot_ip_uncertainty!(rt, pd, id, et, ip, info)
-    plot_ip_aggregate!(rt, pd, id, et, ip, info)
+    plot_ip_uncertainty!(rt, Val(pd), id, et, ip, info)
+    plot_ip_aggregate!(rt, Val(pd), id, et, ip, info)
 
     return ip
 end
 
 function test_information(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{PointEstimate},
     ip,
     items,
@@ -60,8 +60,8 @@ end
 
 function test_information(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{PointEstimate},
     ip,
 )
@@ -74,8 +74,8 @@ end
 
 function test_information(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{SamplingEstimate},
     ip,
     items,
@@ -99,8 +99,8 @@ end
 
 function test_information(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{SamplingEstimate},
     ip,
 )
@@ -123,8 +123,8 @@ end
 
 function plot_ip_uncertainty!(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{PointEstimate},
     ip,
     scores,
@@ -134,8 +134,8 @@ end
 
 function plot_ip_uncertainty!(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{SamplingEstimate},
     ip,
     scores,
@@ -155,8 +155,8 @@ end
 
 function plot_ip_aggregate!(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{PointEstimate},
     ip,
     scores,
@@ -166,8 +166,8 @@ end
 
 function plot_ip_aggregate!(
     ::Type{<:ResponseType},
-    ::Type{Univariate},
-    ::Type{<:Dimensionality},
+    ::Val{1},
+    ::Int,
     ::Type{SamplingEstimate},
     ip,
     scores,
